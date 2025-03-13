@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fdbexporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fdbexporter
+  template:
+    metadata:
+      name: fdbexporter
+      labels:
+        app: fdbexporter
+    spec:
+      containers:
+      - name: fdbexporter
+        iamge: aikoven/foundationdb-exporter:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FDB_CLUSTER_FILE
+          value: /etc/foundationdb/fdb.cluster
+        ports:
+        - name: fdbexporter
+          containerPort: 9444
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+          requests: 
+            memory: 500M
+            cpu: "500m"
+        volumeMounts:
+          - name: fdb-config-volume
+            mountPath: /etc/foundationdb/
+      volumes:
+        - name: fdb-config-volume
+          configMap:
+            defaultMode: 420
+            name: fdb-server-conf

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fdbexporter
+  namespace: monitoring
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '9444'
+spec:
+  selector: 
+    app: fdbexporter
+  ports:
+    - port: 9444
+      targetPort: 9444
